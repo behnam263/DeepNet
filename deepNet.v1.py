@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 import matplotlib.pyplot as plt
 from nn_utils import *
 
@@ -72,12 +73,15 @@ parameters = initial_parameters(layers)
 
 
 X = np.random.rand(5,100)
+previousError=float("inf")
 targ=X[1,:].reshape([100,1]).T
 target = np.sin(1*2*np.pi*targ)
 epoch_error = []
 AL=0
 target1=[]
 for l in range(1,100):
+     
+    
     # A, Z = single_layer_forward(X,1,parameters)
     AL , caches = forward_pass(X,layers,parameters)
     #dA_L = np.random.rand(1,100)
@@ -85,14 +89,21 @@ for l in range(1,100):
     # dA, dW, db = single_layer_backward(da,2,parameters,caches)
     AL =backward_pass(AL,layers,parameters,caches,lr)
     target1=caches[3]['Z3']
-    e =  target- target1
+    e = target1 - target 
     errors = np.array(e)
     epoch_error.append(np.sum(errors**2))
     print('Current epoch is:%s'%np.sum(errors**2))
     
-#plt.plot(targ,target,'r')
-#plt.plot(targ,target1)
+    if (previousError>np.sum(errors**2)):
+        previousError=np.sum(errors**2)
+    else:
+        break
+
+    
+#plt.plot(X,target1)
+#plt.plot(X,target,'r')
 #plt.show()
 
 plt.figure()
 plt.plot(epoch_error)
+#plt.figure()
